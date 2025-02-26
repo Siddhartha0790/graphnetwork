@@ -1,0 +1,93 @@
+{% extends 'layouts/blank.html' %}
+{% load static%}
+{% block content %}
+
+<div class="flex h-[calc(100vh-4rem)]">
+    
+    <!-- Left Side (1/3 width) - Search Form & Buttons -->
+    <div class="w-1/3 bg-white shadow-lg p-6 flex flex-col  items-center">
+        <form method='POST'>   
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="form2">
+        <h2 class="text-xl font-semibold mb-4">Search Users</h2>
+        
+        <!-- Search Input -->
+        <input type="text" placeholder="Search..." name='search'
+               class="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+        <!-- Buttons -->
+        <button  type='submit' class="w-full p-2 bg-blue-600 text-white rounded-lg mb-2 hover:bg-blue-700">
+            Search
+        </button>
+        <button class="w-full p-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">
+            Reset
+        </button>
+        </form>
+
+        {% if user is not none%}
+        <div class="mt-5 max-w-sm bg-white rounded-lg shadow-md overflow-hidden flex items-center p-4 space-x-4">
+        <!-- Profile Picture -->
+        <img class="w-16 h-16 rounded-full" src="{{user.avatar}}" alt="User Profile Picture">
+        
+        <!-- Username -->
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-gray-800">{{user.username}}</h3>
+        </div>
+        
+        <!-- Add Friend Button -->
+        <form method='POST'>
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value={{user.username}}>
+
+        <button 
+         type='submit' 
+         class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+         Add Friend
+        </button>
+        </form>
+       {% endif %}
+       </div>
+    </div>
+
+    <!-- Right Side (2/3 width) - Scrollable Sections -->
+    <div class="w-2/3 bg-white shadow-xl p-4 flex">
+        
+        <!-- Friends List (Left Half) -->
+        <div class="w-1/2 h-full overflow-y-auto p-3">
+            <h3 class="text-lg font-semibold mb-2">Friends</h3>
+            <ul class="space-y-3">
+                {% for friend in friends %}
+                <div>
+                <li class="p-3 bg-gray-200 rounded-lg">
+                    <p>{{friend.name}}</p>
+                    <a href = "{% url 'remove' friend.name %}"><button class='p-2'> Remove </button></a>
+
+
+                </li>
+                </div>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Recommended Users (Right Half) -->
+        <div class="w-1/2 h-full overflow-y-auto p-3 border-l">
+            <h3 class="text-lg font-semibold mb-2">Recommended</h3>
+            <ul class="space-y-3">
+                <li class="p-3 bg-gray-300 rounded-lg">Sophia</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Liam</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Olivia</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Noah</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Emma</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Mason</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Isabella</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Lucas</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Ava</li>
+                <li class="p-3 bg-gray-300 rounded-lg">Ethan</li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

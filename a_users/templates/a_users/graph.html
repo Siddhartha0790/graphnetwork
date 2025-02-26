@@ -1,0 +1,28 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content%}
+<body>
+    <h1>Graph Visualization</h1>
+    <div id="mynetwork"></div>
+    <script>
+      // Create DataSet objects from the JSON passed in context.
+      var nodes = new vis.DataSet({{ nodes|safe }});
+      var edges = new vis.DataSet({{ edges|safe }});
+      console.log(edges);
+      console.log(nodes)
+      // Create a network.
+      var container = document.getElementById('mynetwork');
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {
+        physics: {
+          stabilization: false
+        }
+      };
+      var network = new vis.Network(container, data, options);
+    </script>
+  </body>
+
+{% endblock %}
