@@ -24,7 +24,7 @@
         </button>
         </form>
 
-        {% if user is not none%}
+        {% if user != ''%}
         <div class="mt-5 max-w-sm bg-white rounded-lg shadow-md overflow-hidden flex items-center p-4 space-x-4">
         <!-- Profile Picture -->
         <img class="w-16 h-16 rounded-full" src="{{user.avatar}}" alt="User Profile Picture">
@@ -41,13 +41,18 @@
 
         <button 
          type='submit' 
-         class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-         Add Friend
+         class="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">
+         +
         </button>
+        <br>
+      
+       
         </form>
+        <a href = "{% url 'shortestpath' user.username %}"><button class='p-2'> Shortest Path </button></a>
+        </div>
        {% endif %}
+       
        </div>
-    </div>
 
     <!-- Right Side (2/3 width) - Scrollable Sections -->
     <div class="w-2/3 bg-white shadow-xl p-4 flex">
@@ -61,6 +66,7 @@
                 <li class="p-3 bg-gray-200 rounded-lg">
                     <p>{{friend.name}}</p>
                     <a href = "{% url 'remove' friend.name %}"><button class='p-2'> Remove </button></a>
+                    <a href = "{% url 'shortestpath' friend.name %}"><button class='p-2'> Shortest Path </button></a>
 
 
                 </li>
@@ -73,16 +79,9 @@
         <div class="w-1/2 h-full overflow-y-auto p-3 border-l">
             <h3 class="text-lg font-semibold mb-2">Recommended</h3>
             <ul class="space-y-3">
-                <li class="p-3 bg-gray-300 rounded-lg">Sophia</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Liam</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Olivia</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Noah</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Emma</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Mason</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Isabella</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Lucas</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Ava</li>
-                <li class="p-3 bg-gray-300 rounded-lg">Ethan</li>
+                {% for value,key in dict1.items %}
+                <li class="p-3 bg-gray-300 rounded-lg">{{value}}-{{key}}</li>
+                {% endfor %}
             </ul>
         </div>
 

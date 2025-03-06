@@ -12,4 +12,5 @@ urlpatterns = [
     path('rec/', rec_view, name="rec"),
     path('graph/', graph_view, name="graph"),
     path('remove/<str:pk>', remove , name="remove"),
+    path('shortestpath/<str:pk>', shortestpath , name="shortestpath"),
 ]

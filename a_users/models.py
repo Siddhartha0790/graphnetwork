@@ -5,10 +5,14 @@ from django.conf import settings
 
 from neomodel import StructuredNode, StringProperty, RelationshipTo, UniqueIdProperty
 
+class messages(StructuredNode):
+    pass
+
 class Person(StructuredNode):
 
     name = StringProperty(unique_index=True, required=True)
     friends = RelationshipTo("Person", "FRIENDS_WITH")
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

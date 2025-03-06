@@ -97,6 +97,26 @@ def profile_delete_view(request):
 
 @login_required
 def rec_view(request):
+    db.cypher_query("CALL gds.graph.project('myGraph', 'Person', 'FRIENDS_WITH');")
+    
+
+    # Run the PageRank Algorithm
+    query = """
+    CALL gds.pageRank.stream('myGraph')
+    YIELD nodeId, score
+    RETURN gds.util.asNode(nodeId).name AS Name, score
+    ORDER BY score DESC;
+    """
+    
+    results, _ = db.cypher_query(query)
+
+    # Convert results to dictionary
+    pagerank_dict = {record[0]: record[1] for record in results}
+    print(pagerank_dict)
+   
+    db.cypher_query("CALL gds.graph.drop('myGraph');")
+    
+    
     my_user = Person.nodes.get(name = request.user.username)
     friends = my_user.friends.all()
     user = ''
@@ -107,7 +127,7 @@ def rec_view(request):
            # print(request.POST)
             username = request.POST.get('search')
             user = User.objects.get(username=username)
-            return render(request, 'a_users/recommendation.html' , {'user': user , 'friends':friends})
+            return render(request, 'a_users/recommendation.html' , {'user': user , 'friends':friends ,'dict1':pagerank_dict})
         
         else :
             print(form_type)
@@ -119,7 +139,7 @@ def rec_view(request):
             guy1.friends.connect(guy2)
             return redirect('rec')
         
-    return render(request, 'a_users/recommendation.html',{'user':user ,'friends':friends})
+    return render(request, 'a_users/recommendation.html',{'user':user ,'friends':friends,'dict1':pagerank_dict})
 
 def graph_view(request):
     query = """
@@ -177,13 +197,7 @@ def graph_view(request):
     }
     return render(request, 'a_users/graph.html', context)
 
-def get_node_by_element_id(element_id):
-    query = "MATCH (n) WHERE elementId(n) = $element_id RETURN n"
-    results, _ = db.cypher_query(query, {"element_id": element_id})
-    if results:
-        node = results[0][0]
-        return node
-    return None
+
 def remove(request,pk):
     print(pk)
     person1 = Person.nodes.get(name =pk)
@@ -193,4 +207,23 @@ def remove(request,pk):
     
     return redirect('rec')
     
+def shortestpath(request,pk):
+    query = """
+    MATCH path = shortestPath((start:Person {name: $start})-[:FRIENDS_WITH*]-(end:Person {name: $end}))
+    RETURN [node in nodes(path) | node.name] AS shortestPath;
+    """
+    me = request.user.username
+    him = pk
+    results, _ = db.cypher_query(query, {"start": me, "end": pk})
+    print('function runs')
+    print(results[0][0])
+    print(type(results))
+    path = results[0][0] # Example path
+
+    nodes = [{"id": i, "label": city} for i, city in enumerate(path)]
+    edges = [{"from": i, "to": i + 1} for i in range(len(path) - 1)]
+
+    return render(request, 'a_users/shortestpath.html', {"nodes": nodes, "edges": edges})
+
     
+ 

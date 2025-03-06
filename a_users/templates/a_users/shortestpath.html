@@ -1,0 +1,20 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+
+<h2>SHORTEST PATH</h2>
+<div id="mynetwork"></div>
+
+<script>
+    var nodes = new vis.DataSet({{ nodes|safe }});
+    var edges = new vis.DataSet({{ edges|safe }});
+
+    var container = document.getElementById("mynetwork");
+    var data = { nodes: nodes, edges: edges };
+    var options = { physics: { enabled: true },
+    edges: { font: { align: "middle" }, arrows: "to" } 
+};  // Enable physics for dynamic layout
+
+    var network = new vis.Network(container, data, options);
+</script>
+{% endblock %}
